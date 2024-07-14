@@ -5,6 +5,7 @@ import torch
 from PIL import Image
 from diffusers import StableDiffusionPipeline, DDIMInverseScheduler, AutoencoderKL, DDIMScheduler
 from torchvision import transforms as tvt
+from math import ceil
 
 
 class DDIMInversionPipeline:
@@ -27,7 +28,7 @@ class DDIMInversionPipeline:
         self.pipe.scheduler = self.inverse_scheduler
 
         inv_latents = []
-        for i in range(x.shape[0] // self.batch_size + 1):
+        for i in range(ceil(x.shape[0] / self.batch_size)):
 
             x_batch = x[i*self.batch_size: (i+1)*self.batch_size]
 
@@ -52,7 +53,7 @@ class DDIMInversionPipeline:
         self.pipe.scheduler = self.scheduler
 
         images = []
-        for i in range(inv_latents.shape[0] // self.batch_size + 1):
+        for i in range(ceil(inv_latents.shape[0] / self.batch_size)):
 
             inv_latents_batch = inv_latents[i*self.batch_size: (i+1)*self.batch_size]
 
